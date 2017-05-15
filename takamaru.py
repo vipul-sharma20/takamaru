@@ -1,6 +1,7 @@
 import configparser
 
 import praw
+from twiliio.rest import Client
 
 from constants import CONFIG_FILE, SUBREDDITS, QUERIES
 
@@ -10,8 +11,8 @@ class Reddit(object):
     def __init__(self, *args, **kwargs):
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE)
-        client_id = config['KEYS']['CLIENT_ID']
-        client_secret = config['KEYS']['CLIENT_SECRET']
+        client_id = config['REDDIT_KEYS']['CLIENT_ID']
+        client_secret = config['REDDIT_KEYS']['CLIENT_SECRET']
         username = config['CREDENTIALS']['USERNAME']
         password = config['CREDENTIALS']['PASSWORD']
 
@@ -42,13 +43,19 @@ class Reddit(object):
         return results
 
 
+class Hawk(object):
+
+    def __init__(self, *args, **kwargs):
+        config = configparser.ConfigParser()
+        config.read(CONFIG_FILE)
+        self.account= config['TWILIO']['ACCOUNT']
+        self.token = config['TWILIO']['TOKEN']
+
+    def twilio_hawk(self):
+        raise NotImplementedError
+
+
 if __name__ == '__main__':
     r_instance = Reddit()
     posts_no_hot = r_instance.search()
     posts_hot = r_instance.search(hot=True)
-    for pnh in posts_no_hot:
-        for p in pnh:
-            print(p.title)
-    for ph in posts_hot:
-        for p in ph:
-            print(p.title)
