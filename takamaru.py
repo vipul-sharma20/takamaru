@@ -42,4 +42,7 @@ class Reddit(object):
 
 
 if __name__ == '__name__':
-    pass
+    r_instance = Reddit()
+    posts_no_hot = r_instance.search()
+    posts_hot = r_instance.search(hot=True)
+
