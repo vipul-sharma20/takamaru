@@ -14,8 +14,8 @@ class Reddit(object):
     def __init__(self, *args, **kwargs):
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE)
-        client_id = config['REDDIT_KEYS']['CLIENT_ID']
-        client_secret = config['REDDIT_KEYS']['CLIENT_SECRET']
+        client_id = config['REDDIT']['CLIENT_ID']
+        client_secret = config['REDDIT']['CLIENT_SECRET']
         username = config['CREDENTIALS']['USERNAME']
         password = base64.b64decode(config['CREDENTIALS']['PASSWORD'])
 
