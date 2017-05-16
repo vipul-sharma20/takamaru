@@ -1,4 +1,4 @@
-CONFIG_FILE = ".takamaru.conf"
+CONFIG_FILE = "../.takamaru.conf"
 
 SUBREDDITS = ["python", "programming", "coolgithubprojects"]
 

@@ -4,7 +4,7 @@ import base64
 import configparser
 
 import praw
-from twiliio.rest import Client
+from twilio.rest import Client
 
 from constants import CONFIG_FILE, SUBREDDITS, QUERIES
 
@@ -57,8 +57,3 @@ class Hawk(object):
     def twilio_hawk(self):
         raise NotImplementedError
 
-
-if __name__ == '__main__':
-    r_instance = Reddit()
-    posts_no_hot = r_instance.search()
-    posts_hot = r_instance.search(hot=True)
