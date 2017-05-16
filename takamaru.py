@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+import base64
 import configparser
 
 import praw
@@ -14,7 +17,7 @@ class Reddit(object):
         client_id = config['REDDIT_KEYS']['CLIENT_ID']
         client_secret = config['REDDIT_KEYS']['CLIENT_SECRET']
         username = config['CREDENTIALS']['USERNAME']
-        password = config['CREDENTIALS']['PASSWORD']
+        password = base64.b64decode(config['CREDENTIALS']['PASSWORD'])
 
         self.reddit = praw.Reddit(client_id=client_id,
                                   client_secret=client_secret,
@@ -48,7 +51,7 @@ class Hawk(object):
     def __init__(self, *args, **kwargs):
         config = configparser.ConfigParser()
         config.read(CONFIG_FILE)
-        self.account= config['TWILIO']['ACCOUNT']
+        self.account = config['TWILIO']['ACCOUNT']
         self.token = config['TWILIO']['TOKEN']
 
     def twilio_hawk(self):
