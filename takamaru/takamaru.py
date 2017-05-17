@@ -2,6 +2,7 @@
 
 import base64
 import configparser
+from functools import wraps
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -10,7 +11,24 @@ import praw
 from twilio.rest import Client
 
 from constants import CONFIG_FILE, SUBREDDITS, QUERIES, RECEPIENTS, \
-        SMTP_SERVER, SMTP_PORT
+        SMTP_SERVER, SMTP_PORT, TABLE_ROWS, TABLE_COLUMNS, EMAIL_TEMPLATE
+
+
+def prepare_message(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        body = kwargs.get('body')
+        subject = kwargs.get('subject')
+        rows = []
+        for submission in body:
+            columns = []
+            columns.append(TABLE_COLUMNS.format(content=submission.title, width='80%'))
+            columns.append(TABLE_COLUMNS.format(content=submission.shortlink, width='20%'))
+            rows.append(TABLE_ROWS.format(content=''.join(columns)))
+        body = EMAIL_TEMPLATE.format(rows=''.join(rows))
+        return func(self, body=body, subject=subject)
+    return wrapper
+
 
 
 class Reddit(object):
@@ -60,6 +78,7 @@ class Hawk(object):
         account = self.config['TWILIO']['ACCOUNT']
         token = self.config['TWILIO']['TOKEN']
 
+    @prepare_message
     def gmail_hawk(self, subject, body):
         gmail_user = self.config['GMAIL']['USER']
         gmail_pwd = base64.b64decode(self.config['GMAIL']['PASSWORD']).decode('UTF-8')
@@ -82,3 +101,4 @@ class Hawk(object):
 
         except smtplib.SMTPException:
             print("failed to send e-mail")
+
