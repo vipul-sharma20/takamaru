@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from takamaru import Reddit
+from takamaru import Reddit, Hawk
 
 
 def main():
@@ -8,13 +8,9 @@ def main():
     posts_no_hot = r_instance.search()
     posts_hot = r_instance.search(hot=True)
 
-    for pnh in posts_no_hot:
-        for p in pnh:
-            print(p.title)
-
     for ph in posts_hot:
-        for p in ph:
-            print(p.title)
+        hawk = Hawk()
+        hawk.gmail_hawk(subject="Popular Reddit Posts", body=ph)
 
 
 if __name__ == '__main__':
