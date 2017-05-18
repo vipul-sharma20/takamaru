@@ -20,4 +20,4 @@ EMAIL_TEMPLATE = """
 
 TABLE_COLUMNS = "<td width={width}>{content}</td>"
 TABLE_ROWS = "<tr>{content}</tr>"
-
+ANCHOR_TAG = "<a href={href}>{content}</a>"
