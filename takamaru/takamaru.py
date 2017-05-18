@@ -30,7 +30,6 @@ def prepare_message(func):
     return wrapper
 
 
-
 class Reddit(object):
 
     def __init__(self, *args, **kwargs):
@@ -89,7 +88,7 @@ class Hawk(object):
             msg['To'] = ', '.join(RECEPIENTS)
             msg['Subject'] = subject
 
-            msg.attach(MIMEText(body, 'plain'))
+            msg.attach(MIMEText(body, 'html'))
 
             server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
             server.starttls()
