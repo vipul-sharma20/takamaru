@@ -11,7 +11,8 @@ import praw
 from twilio.rest import Client
 
 from constants import CONFIG_FILE, SUBREDDITS, QUERIES, RECEPIENTS, \
-        SMTP_SERVER, SMTP_PORT, TABLE_ROWS, TABLE_COLUMNS, EMAIL_TEMPLATE
+        SMTP_SERVER, SMTP_PORT, TABLE_ROWS, TABLE_COLUMNS, EMAIL_TEMPLATE, \
+        ANCHOR_TAG
 
 
 def prepare_message(func):
@@ -22,8 +23,10 @@ def prepare_message(func):
         rows = []
         for submission in body:
             columns = []
-            columns.append(TABLE_COLUMNS.format(content=submission.title, width='80%'))
-            columns.append(TABLE_COLUMNS.format(content=submission.shortlink, width='20%'))
+            anchor_tag = ANCHOR_TAG.format(href=submission.shortlink,
+                                           content=submission.title)
+            columns.append(TABLE_COLUMNS.format(content=anchor_tag, width='80%'))
+            columns.append(TABLE_COLUMNS.format(content=submission.score, width='20%'))
             rows.append(TABLE_ROWS.format(content=''.join(columns)))
         body = EMAIL_TEMPLATE.format(rows=''.join(rows))
         return func(self, body=body, subject=subject)
