@@ -13,6 +13,7 @@ from twilio.rest import Client
 from constants import CONFIG_FILE, SUBREDDITS, QUERIES, RECEPIENTS, \
         SMTP_SERVER, SMTP_PORT, TABLE_ROWS, TABLE_COLUMNS, EMAIL_TEMPLATE, \
         ANCHOR_TAG
+from tasks import send_email
 
 
 def prepare_message(func):
@@ -82,25 +83,5 @@ class Hawk(object):
 
     @prepare_message
     def gmail_hawk(self, subject, body):
-        gmail_user = self.config['GMAIL']['USER']
-        gmail_pwd = base64.b64decode(self.config['GMAIL']['PASSWORD']).decode('UTF-8')
-
-        try:
-            msg = MIMEMultipart()
-            msg['From'] = gmail_user
-            msg['To'] = ', '.join(RECEPIENTS)
-            msg['Subject'] = subject
-
-            msg.attach(MIMEText(body, 'html'))
-
-            server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-            server.starttls()
-
-            server.login(gmail_user, gmail_pwd)
-            text = msg.as_string()
-            server.sendmail(gmail_user, RECEPIENTS, text)
-            server.quit()
-
-        except smtplib.SMTPException:
-            print("failed to send e-mail")
+        send_email.delay(subject, body)
 
