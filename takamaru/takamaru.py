@@ -3,16 +3,12 @@
 import base64
 import configparser
 from functools import wraps
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 import praw
 from twilio.rest import Client
 
-from constants import CONFIG_FILE, SUBREDDITS, QUERIES, RECEPIENTS, \
-        SMTP_SERVER, SMTP_PORT, TABLE_ROWS, TABLE_COLUMNS, EMAIL_TEMPLATE, \
-        ANCHOR_TAG
+from constants import CONFIG_FILE, SUBREDDITS, QUERIES, TABLE_ROWS, \
+        TABLE_COLUMNS, EMAIL_TEMPLATE, ANCHOR_TAG
 from tasks import send_email
 
 
@@ -72,10 +68,6 @@ class Reddit(object):
 
 
 class Hawk(object):
-
-    def __init__(self, *args, **kwargs):
-        self.config = configparser.ConfigParser()
-        self.config.read(CONFIG_FILE)
 
     def twilio_hawk(self):
         account = self.config['TWILIO']['ACCOUNT']
