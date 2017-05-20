@@ -5,7 +5,14 @@
        |_|\__,_|_\_\__,_|_|_|_\__,_|_|  \_,_|
 
 
-*Work in Progresss*
+Create custom email notifications and newsletters to get popular and trending
+Reddit posts and GitHub repositories
 
-Reddit message alerts
+How it Works?
+-------------
+
+* Choose subreddits to monitor
+* Customize desired search terms
+* Get email / sms notifications *(you'll need to configure for email & sms)*
+
 See: [Takamaru](http://naruto.wikia.com/wiki/Takamaru)
