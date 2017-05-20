@@ -4,15 +4,13 @@
        | |/ _` | / / _` | '  \/ _` | '_| || |
        |_|\__,_|_\_\__,_|_|_|_\__,_|_|  \_,_|
 
+Build your own alerts and newsletters
 
-Create custom email notifications and newsletters to get popular and trending
-Reddit posts and GitHub repositories
+Get customized email / sms alerts and newsletters of desired Reddit posts
+and GitHub repositories. These customizations can be like choice of subreddits,
+frequency of alerts, desired keywords... *more coming*
 
-How it Works?
--------------
-
-* Choose subreddits to monitor
-* Customize desired search terms
-* Get email / sms notifications *(you'll need to configure for email & sms)*
+*Work in Progress*
+*TODO: Add doc on working and configuration*
 
 See: [Takamaru](http://naruto.wikia.com/wiki/Takamaru)
