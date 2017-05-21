@@ -61,7 +61,7 @@ class Reddit(object):
             for q in QUERIES:
                 submissions = sub.search(query=query(q),
                                          time_filter=time_filter,
-                                         limit=3)
+                                         limit=6)
                 results.append(submissions)
 
         return results
