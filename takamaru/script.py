@@ -5,7 +5,6 @@ from takamaru import Reddit, Hawk
 
 def main():
     r_instance = Reddit()
-    posts_no_hot = r_instance.search()
     posts_hot = r_instance.search(hot=True)
     hawk = Hawk()
 
