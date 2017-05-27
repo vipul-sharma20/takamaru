@@ -12,9 +12,6 @@ def main():
     for ph in posts_hot:
         hawk.gmail_hawk(subject="Popular Reddit Posts", body=ph)
 
-    # for pnh in posts_no_hot:
-    #    hawk.gmail_hawk(subject="Top Posts", body=pnh)
-
 
 if __name__ == '__main__':
     main()
