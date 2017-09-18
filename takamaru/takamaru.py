@@ -22,8 +22,10 @@ def prepare_message(func):
             columns = []
             anchor_tag = ANCHOR_TAG.format(href=submission.shortlink,
                                            content=submission.title)
-            columns.append(TABLE_COLUMNS.format(content=anchor_tag, width='80%'))
-            columns.append(TABLE_COLUMNS.format(content=submission.score, width='20%'))
+            columns.append(TABLE_COLUMNS.format(content=anchor_tag,
+                                                width='80%'))
+            columns.append(TABLE_COLUMNS.format(content=submission.score,
+                                                width='20%'))
             rows.append(TABLE_ROWS.format(content=''.join(columns)))
         body = EMAIL_TEMPLATE.format(rows=''.join(rows))
         return func(self, body=body, subject=subject)
@@ -40,11 +42,12 @@ class Reddit(object):
         username = config['CREDENTIALS']['USERNAME']
         password = base64.b64decode(config['CREDENTIALS']['PASSWORD'])
 
-        self.reddit = praw.Reddit(client_id=client_id,
-                                  client_secret=client_secret,
-                                  username=username,
-                                  password=password,
-                                  user_agent='script by /u/{}'.format(username))
+        self.reddit = praw.Reddit(
+                                client_id=client_id,
+                                client_secret=client_secret,
+                                username=username,
+                                password=password,
+                                user_agent='script by /u/{}'.format(username))
 
     def search(self, hot=False, time_filter='day', *args, **kwargs):
         query = lambda q: '+'.join(q)
