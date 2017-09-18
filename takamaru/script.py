@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from takamaru import Reddit, Hawk
+from constants import SUBREDDITS
 
 
 def main():
@@ -8,8 +9,9 @@ def main():
     posts_hot = r_instance.search(hot=True)
     hawk = Hawk()
 
-    for ph in posts_hot:
-        hawk.gmail_hawk(subject="Popular Reddit Posts", body=ph)
+    for i, ph in enumerate(posts_hot):
+        subject = "Popular Reddit Posts in /r/{sub}".format(sub=SUBREDDITS[i])
+        hawk.gmail_hawk(subject=subject, body=ph)
 
 
 if __name__ == '__main__':
