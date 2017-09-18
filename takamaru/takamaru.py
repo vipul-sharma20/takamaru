@@ -33,6 +33,10 @@ def prepare_message(func):
 
 
 class Reddit(object):
+    """
+    Implements reddit API to search posts from subreddits from the list
+    specified
+    """
 
     def __init__(self, *args, **kwargs):
         config = configparser.ConfigParser()
@@ -50,14 +54,23 @@ class Reddit(object):
                                 user_agent='script by /u/{}'.format(username))
 
     def search(self, hot=False, time_filter='day', *args, **kwargs):
+        """
+        search reddit posts
+
+        :param hot: (bool) if hot posts required
+        :param time_filer: (str) all, day, hour, month, week, year (default: day)
+        :returns: (list) list of posts
+        """
         query = lambda q: '+'.join(q)
         results = []
 
+        # Fetch hot posts from `SUBREDDITS` (no query constraints)
         if hot:
             for s in SUBREDDITS:
-                submissions = self.reddit.subreddit(s).hot(limit=3)
+                submissions = self.reddit.subreddit(s).hot(limit=6)
                 results.append(submissions)
 
+        # Fetch posts from `SUBREDDITS` (based on query constraints `QUERIES`)
         else:
             sub = self.reddit.subreddit(query(SUBREDDITS))
 
