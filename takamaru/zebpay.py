@@ -8,8 +8,7 @@ def main():
     z_instance = Zebpay()
     hawk = Hawk()
 
-    buy_price = z_instance.get_price(buy=True)
-    print(buy_price)
+    buy_price, sell_price = z_instance.get_price()
     if buy_price:
         subject = "Buy price less than {threshold}: Current: {buy_price}".format(
                                                     threshold=BUY_THRESHOLD,
@@ -22,7 +21,6 @@ def main():
             hawk.gmail_hawk(subject=subject, source='zebpay',
                             body=body, recipients=[r])
 
-    sell_price = z_instance.get_price(buy=False)
     if sell_price:
         subject = "Sell price more than {threshold}: Current: {sell_price}".format(
                                                     threshold=SELL_THRESHOLD,
