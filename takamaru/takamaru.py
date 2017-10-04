@@ -5,8 +5,7 @@ import configparser
 from functools import wraps
 
 import praw
-from bs4 import BeautifulSoup
-from selenium import webdriver
+import requests
 from twilio.rest import Client
 
 from constants import CONFIG_FILE, SUBREDDITS, QUERIES, TABLE_ROWS, \
@@ -93,27 +92,13 @@ class Reddit(object):
 
 class Zebpay(object):
 
-    def __init__(self, *args, **kwargs):
-        self.driver = webdriver.PhantomJS()
+    def get_price(self):
+        data = requests.get(ZEBPAY_URL).json()
+        buy_price = data['buy']
+        sell_price = data['sell']
 
-    def get_price(self, buy=True):
-        self.driver.get(ZEBPAY_URL)
-        source = self.driver.page_source
-        soup = BeautifulSoup(source, "html.parser")
-
-        if buy:
-            buy_price = self._get_price(soup.find(id="buy").get_text())
-            if buy_price < BUY_THRESHOLD:
-                return buy_price
-            return False
-        else:
-            sell_price = self._get_price(soup.find(id="topsell").get_text())
-            if sell_price > SELL_THRESHOLD:
-                return sell_price
-            return False
-
-    def _get_price(self, price):
-        return int(price.replace(',', ''))
+        return buy_price if buy_price < BUY_THRESHOLD else False, sell_price \
+                    if sell_price > SELL_THRESHOLD else False
 
 class Hawk(object):
 

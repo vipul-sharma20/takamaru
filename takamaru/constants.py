@@ -22,7 +22,7 @@ TABLE_COLUMNS = "<td width={width}>{content}</td>"
 TABLE_ROWS = "<tr>{content}</tr>"
 ANCHOR_TAG = "<a href={href}>{content}</a>"
 
-ZEBPAY_URL = "http://zebpay.com/"
+ZEBPAY_URL = "https://api.zebpay.com/api/v1/ticker?currencyCode=INR"
 BUY_THRESHOLD = 289000
 SELL_THRESHOLD = 300000
 ZEBPAY_RECIPIENTS = ["vipul.sharma20@gmail.com", "vipul@driveu.in"]
