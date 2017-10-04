@@ -6,23 +6,23 @@ from email.mime.text import MIMEText
 
 from celery import Celery
 
-from constants import SMTP_SERVER, SMTP_PORT, RECEPIENTS, CONFIG_FILE
+from constants import SMTP_SERVER, SMTP_PORT, CONFIG_FILE
 
 app = Celery('tasks', backend='amqp', broker='amqp://')
 
 
 @app.task
-def send_email(subject, body):
+def send_email(subject, body, recipients):
     config = configparser.ConfigParser()
     config.read(CONFIG_FILE)
 
     gmail_user = config['GMAIL']['USER']
     gmail_pwd = base64.b64decode(config['GMAIL']['PASSWORD']).decode('UTF-8')
-
+    print("sending email")
     try:
         msg = MIMEMultipart()
         msg['From'] = gmail_user
-        msg['To'] = ', '.join(RECEPIENTS)
+        msg['To'] = ', '.join(recipients)
         msg['Subject'] = subject
 
         msg.attach(MIMEText(body, 'html'))
@@ -32,7 +32,7 @@ def send_email(subject, body):
 
         server.login(gmail_user, gmail_pwd)
         text = msg.as_string()
-        server.sendmail(gmail_user, RECEPIENTS, text)
+        server.sendmail(gmail_user, recipients, text)
         server.quit()
         print("Email sent")
     except smtplib.SMTPException:

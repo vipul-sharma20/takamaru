@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from takamaru import Reddit, Hawk
-from constants import SUBREDDITS
+from constants import SUBREDDITS, REDDIT_RECIPIENTS
 
 
 def main():
@@ -11,7 +11,9 @@ def main():
 
     for i, ph in enumerate(posts_hot):
         subject = "Popular Reddit Posts in /r/{sub}".format(sub=SUBREDDITS[i])
-        hawk.gmail_hawk(subject=subject, body=ph)
+        for r in REDDIT_RECIPIENTS:
+            hawk.gmail_hawk(subject=subject, source='reddit',
+                            body=ph, recipients=[r])
 
 
 if __name__ == '__main__':

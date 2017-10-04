@@ -5,30 +5,38 @@ import configparser
 from functools import wraps
 
 import praw
+from bs4 import BeautifulSoup
+from selenium import webdriver
 from twilio.rest import Client
 
 from constants import CONFIG_FILE, SUBREDDITS, QUERIES, TABLE_ROWS, \
-        TABLE_COLUMNS, EMAIL_TEMPLATE, ANCHOR_TAG
+        TABLE_COLUMNS, EMAIL_TEMPLATE, ANCHOR_TAG, ZEBPAY_URL, BUY_THRESHOLD, \
+        SELL_THRESHOLD
 from tasks import send_email
 
 
 def prepare_message(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
+        source = kwargs.get('source')
         body = kwargs.get('body')
+        recipients = kwargs.get('recipients')
         subject = kwargs.get('subject')
-        rows = []
-        for submission in body:
-            columns = []
-            anchor_tag = ANCHOR_TAG.format(href=submission.shortlink,
-                                           content=submission.title)
-            columns.append(TABLE_COLUMNS.format(content=anchor_tag,
-                                                width='80%'))
-            columns.append(TABLE_COLUMNS.format(content=submission.score,
-                                                width='20%'))
-            rows.append(TABLE_ROWS.format(content=''.join(columns)))
-        body = EMAIL_TEMPLATE.format(rows=''.join(rows))
-        return func(self, body=body, subject=subject)
+        if source in ['reddit']:
+            rows = []
+            for submission in body:
+                columns = []
+                anchor_tag = ANCHOR_TAG.format(href=submission.shortlink,
+                                               content=submission.title)
+                columns.append(TABLE_COLUMNS.format(content=anchor_tag,
+                                                    width='80%'))
+                columns.append(TABLE_COLUMNS.format(content=submission.score,
+                                                    width='20%'))
+                rows.append(TABLE_ROWS.format(content=''.join(columns)))
+            body = EMAIL_TEMPLATE.format(rows=''.join(rows))
+            return func(self, body=body, recipients=recipients, source=source,
+                        subject=subject)
+        return func(self, *args, **kwargs)
     return wrapper
 
 
@@ -83,6 +91,30 @@ class Reddit(object):
         return results
 
 
+class Zebpay(object):
+
+    def __init__(self, *args, **kwargs):
+        self.driver = webdriver.PhantomJS()
+
+    def get_price(self, buy=True):
+        self.driver.get(ZEBPAY_URL)
+        source = self.driver.page_source
+        soup = BeautifulSoup(source, "html.parser")
+
+        if buy:
+            buy_price = self._get_price(soup.find(id="buy").get_text())
+            if buy_price < BUY_THRESHOLD:
+                return buy_price
+            return False
+        else:
+            sell_price = self._get_price(soup.find(id="topsell").get_text())
+            if sell_price > SELL_THRESHOLD:
+                return sell_price
+            return False
+
+    def _get_price(self, price):
+        return int(price.replace(',', ''))
+
 class Hawk(object):
 
     def twilio_hawk(self):
@@ -90,6 +122,6 @@ class Hawk(object):
         token = self.config['TWILIO']['TOKEN']
 
     @prepare_message
-    def gmail_hawk(self, subject, body):
-        send_email.delay(subject, body)
+    def gmail_hawk(self, source, subject, body, recipients):
+        send_email.delay(subject, body, recipients)
 
